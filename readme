@@ -1,7 +1,3 @@
-auth - http post 'http://13.232.150.249:8001/api-token-auth/' username=ash@orderofn.com password=ash
-jobs - http post 'http://13.232.150.249:8001/jobs/' Authorization:'Token 1bcf1c269e9f5ef9ae617a646e709a003c939fda' title='Web Dev' company=OrderOfN
-notes - http post 'http://13.232.150.249:8001/notes/' Authorization:'Token 1bcf1c269e9f5ef9ae617a646e709a003c939fda' text=["OrderOfN"] job=1
-contact - http post 'http://13.232.150.249:8001/contacts/' Authorization:'Token 1bcf1c269e9f5ef9ae617a646e709a003c939fda' first_name="new" last_name="user" job=1
 
 List of countries - https://pypi.org/project/pycountry/\
 
