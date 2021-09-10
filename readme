@@ -1,0 +1,83 @@
+auth - http post 'http://13.232.150.249:8001/api-token-auth/' username=ash@orderofn.com password=ash
+jobs - http post 'http://13.232.150.249:8001/jobs/' Authorization:'Token 1bcf1c269e9f5ef9ae617a646e709a003c939fda' title='Web Dev' company=OrderOfN
+notes - http post 'http://13.232.150.249:8001/notes/' Authorization:'Token 1bcf1c269e9f5ef9ae617a646e709a003c939fda' text=["OrderOfN"] job=1
+contact - http post 'http://13.232.150.249:8001/contacts/' Authorization:'Token 1bcf1c269e9f5ef9ae617a646e709a003c939fda' first_name="new" last_name="user" job=1
+
+List of countries - https://pypi.org/project/pycountry/\
+
+
+SETUP :
+
+% python3 -m venv env    
+% source env/bin/activate
+% pip install -r requirements.txt 
+% set -a; source .env ; set +a
+
+ ./manage.py makemigrations
+./manage.py migrate 
+
+>>> from django.contrib.auth.models import User
+>>> u = User.objects.create( first_name = 'qogita', last_name = 'user', email = 'ash@qogita.com', username= 'ash@qogita.com')
+>>> u.set_password('ash')
+>>> u.save()
+>>> 
+
+
+http post 'http://127.0.0.1:8000/api-token-auth/' username=ash@qogita.com password=ash
+
+{
+    "token": "35540ab019d7b208f3c2f81bce826000fb23c2bb"
+}
+
+
+
+(env) ashishjain@Ashishs-Mac-mini qogita % http post 'http://127.0.0.1:8000/address/' Authorization:'Token 35540ab019d7b208f3c2f81bce826000fb23c2bb'
+{
+    "city": [
+        "This field is required."
+    ],
+    "country": [
+        "This field is required."
+    ],
+    "pincode": [
+        "This field is required."
+    ],
+    "state": [
+        "This field is required."
+    ],
+    "street": [
+        "This field is required."
+    ]
+}
+
+
+
+(env) ashishjain@Ashishs-Mac-mini qogita % http post 'http://127.0.0.1:8000/address/' Authorization:'Token 35540ab019d7b208f3c2f81bce826000fb23c2bb' city=Chennai country=India pincode=600024 state=TamilNadu street='123 chennai'
+HTTP/1.1 403 Forbidden
+Allow: GET, POST, HEAD, OPTIONS
+Content-Length: 69
+Content-Type: application/json
+Date: Fri, 10 Sep 2021 10:26:31 GMT
+Referrer-Policy: same-origin
+Server: WSGIServer/0.2 CPython/3.9.6
+Vary: Accept
+X-Content-Type-Options: nosniff
+X-Frame-Options: DENY
+
+{
+    "error": "Duplicate address found. Please add a new unique address"
+}
+
+
+GET ALL ADDRESSES
+
+http get 'http://127.0.0.1:8000/address/' Authorization:'Token 35540ab019d7b208f3c2f81bce826000fb23c2bb'
+
+
+FILTER ADDRESSES
+
+http get 'http://127.0.0.1:8000/address/?state=Andhra' Authorization:'Token 35540ab019d7b208f3c2f81bce826000fb23c2bb'
+
+PAGINATION (first 10 only sent by default)
+
+http get 'http://127.0.0.1:8000/address/?limit=10&offset=10' Authorization:'Token 35540ab019d7b208f3c2f81bce826000fb23c2bb'

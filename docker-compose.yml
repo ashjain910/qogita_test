@@ -1,0 +1,55 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgis/postgis:11-2.5-alpine
+    volumes:
+      - ./data/db:/var/lib/postgresql/data1
+    environment:
+      - DB_HOST={DB_HOST}
+      - DB_NAME={DB_NAME}
+      - DB_USER={DB_USER}
+      - DB_PASSWORD={DB_PASSWORD}
+      - DB_PORT={DB_PORT}
+      - POSTGRES_PASSWORD=postgres
+    env_file:
+      - .env
+  web:
+    build: .
+    command:  "gunicorn backend.wsgi:application --bind 0.0.0.0:${APP_PORT}"
+    volumes:
+      - .:/code
+    ports:
+      - ${APP_PORT}
+    expose:
+        - ${APP_PORT}
+    depends_on:
+      - db
+      - redis
+    env_file:
+      - .env
+    entrypoint: /code/entrypoint.sh
+  nginx:
+    build: ./nginx
+    ports:
+        - 80:80
+    expose:
+        - 80
+    depends_on:
+        - web
+    restart: "on-failure"
+  redis:
+      image: redis:alpine
+  celery:
+    restart: always
+    build:
+      context: .
+    command: celery -A backend worker --beat   -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - ./app:/app
+    depends_on:
+      - db
+      - redis
+      - web
+    env_file:
+      - .env
